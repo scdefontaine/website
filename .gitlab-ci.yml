@@ -1,0 +1,49 @@
+stages:
+  - build
+  - deploy
+
+# secure variables
+# variables:
+  # DOMAIN: seandefontaine.com
+  # USER: yosheo
+  # PASSWORD: WApGZskfikKGGRzqksyn
+
+# build:
+#   stage: build
+#   image: docker:19.03.12
+#   services:
+#     - name: docker:19.03.12-dind
+#       alias: docker
+#   tags:
+#     - gitlab-runner
+#   variables:
+#     DOCKER_HOST: tcp://docker:2376
+#     DOCKER_TLS_CERTDIR: "/certs"
+#     ARTIFACT: $CI_PROJECT_NAME:$CI_COMMIT_SHORT_SHA
+#   script:
+#     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY_IMAGE
+#     - docker build -t $CI_REGISTRY_IMAGE/$ARTIFACT .
+#     - docker push $CI_REGISTRY_IMAGE/$ARTIFACT
+#   only:
+#     - main
+
+# .deploy: &deploy
+#   script:
+#     - >
+#       helm upgrade -i $APP --kubeconfig=$KUBECONFIG --skip-tls-verify=true
+#       --set image=$CI_REGISTRY/$ARTIFACT --set app.host=$APP_HOST
+#       -n NAMESPACE ./helm --wait --debug --cleanup-on-fail
+
+# deploy:
+#   <<: *deploy
+#   stage: deploy
+#   image: alpine
+#   tags:
+#     - gitlab-runner
+#   variables:
+#     APP: $CI_PROJECT_NAME
+#     APP_HOST: $DOMAIN
+#     NAMESPACE: bitoftech
+#     ARTIFACT: $CI_PROJECT_NAME:$CI_COMMIT_SHORT_SHA
+#   only:
+#     - main

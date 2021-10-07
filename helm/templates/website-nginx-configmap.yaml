@@ -1,0 +1,21 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ .Values.name }}-nginx-configmap
+  namespace: {{ .Values.namespace }}
+data:
+  # default.conf: |
+  #   server {
+  #     listen 80;
+  #     listen [::]:80;
+
+  #     root /usr/share/nginx/html;
+  #     index index.html index.htm index.nginx-debian.html;
+
+  #     server_name website;
+
+  #     location / {
+  #       try_files $uri $uri/ =404;
+  #     }
+  #   }
+{{ (.Files.Glob "files/nginx.conf").AsConfig | indent 4 }}

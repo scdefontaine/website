@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.name }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.name }}
+  replicas: {{ default 1 .Values.replicaCount | int }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.name }}
+    spec:
+      # serviceAccountName: gitlab-runner-sa
+      imagePullSecrets:
+        - name: gitlab-runner-image-pull-secret
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: {{ .Values.name }}-nginx-configmap
+      containers:
+      - name: {{ .Values.name }}
+        image: {{ .Values.image }}
+        imagePullPolicy: Always
+        resources: {}
+        volumeMounts:
+        - mountPath: /etc/nginx/conf.d
+          name: nginx-config
+        - mountPath: /usr/share/nginx/html
+          name: dist-files
+        ports:
+        - containerPort: {{ .Values.service.internalPort | int }}
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.service.internalPort | int }}
+        readinessProbe:
+          httpGet:
+            path: /
+            port: {{ .Values.service.internalPort | int }}

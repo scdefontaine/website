@@ -1,0 +1,4 @@
+apiVersion: v1
+name: "website"
+description: "A helm chart for an angular tailwind css website"
+version: 0.1.0

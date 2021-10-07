@@ -1,0 +1,15 @@
+# Helm Values
+
+name: website
+namespace: bitoftech
+image: quay.io/sdefontaine/website:latest
+replicaCount: 1
+
+ingress:
+  class: kong
+
+service:
+  name: website-port
+  type: LoadBalancer
+  internalPort: 80
+  externalPort: 8080
